@@ -54,6 +54,8 @@
   --brand: #ff5a3c;
   --brand-deep: #c9341a;
   --brand-bg: #2a1812;
+  --ok: #34c759; /* delivered (green) */
+  --bad: #ef4444; /* failed (red) */
   /* radial dome gradient (the 3D press button) */
   --dome: radial-gradient(circle at 50% 34%, #ff8f73 0%, #ff5a3c 62%, #e8431f 100%);
 }
@@ -70,6 +72,8 @@
   --color-brand: var(--brand);
   --color-brand-deep: var(--brand-deep);
   --color-brand-bg: var(--brand-bg);
+  --color-ok: var(--ok);
+  --color-bad: var(--bad);
   --radius-sharp: 4px;
 
   /* shadcn semantic utilities */

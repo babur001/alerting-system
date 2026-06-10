@@ -44,3 +44,67 @@ export const settlement = {
   name: "Oqtepa qishlog'i",
   population: "1 284",
 };
+
+// ── Live alert campaign ────────────────────────────────────────────
+// UI model that mirrors exactly what the backend will emit. Every number
+// on /jonli is DERIVED from this, so swapping mock → real API is trivial.
+// The backend source of truth is per-recipient Delivery rows; here we keep
+// the per-channel rollup the screen actually renders.
+
+export type Channel = "sms" | "voice";
+
+export type ChannelStats = {
+  channel: Channel;
+  label: string;
+  total: number; // recipients snapshotted for this channel
+  delivered: number; // DLR-confirmed delivered
+  failed: number; // permanently failed (→ voice escalation)
+};
+
+export type Campaign = {
+  id: string;
+  level: string; // "Qizil"
+  title: string; // "Suv toshqini xavfi"
+  instruction: string; // call-to-action shown to residents
+  elapsed: string; // mock; backend derives from startedAt
+  total: number; // recipient snapshot size
+  batchSize: number; // chunk size per provider bulk request
+  channels: ChannelStats[];
+};
+
+// in-flight = queued + sending + sent, i.e. not yet resolved
+export const inFlight = (c: ChannelStats) => c.total - c.delivered - c.failed;
+
+export type BatchStatus = "done" | "sending" | "queued";
+export type Batch = { no: number; size: number; done: number; status: BatchStatus };
+
+// Batches are a grouping over the ORDERED snapshot (not over raw ids):
+// given how many recipients are resolved, derive each chunk's progress.
+export function deriveBatches(total: number, size: number, resolved: number): Batch[] {
+  const n = Math.ceil(total / size);
+  return Array.from({ length: n }, (_, i) => {
+    const start = i * size;
+    const end = Math.min(start + size, total);
+    const span = end - start;
+    const done = Math.max(0, Math.min(end, resolved) - start);
+    const status: BatchStatus =
+      done >= span ? "done" : done > 0 ? "sending" : "queued";
+    return { no: i + 1, size: span, done, status };
+  });
+}
+
+// "1040" → "1 040"
+export const fmt = (n: number) => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+
+export const liveCampaign: Campaign = {
+  id: "cmp_4821",
+  level: "Qizil",
+  title: "Suv toshqini xavfi",
+  instruction: "12-maktab tomon evakuatsiya",
+  elapsed: "01:23",
+  total: 1284,
+  batchSize: 100,
+  channels: [
+    { channel: "sms", label: "SMS xabar", total: 1284, delivered: 1040, failed: 44 },
+  ],
+};
