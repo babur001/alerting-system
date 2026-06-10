@@ -1,26 +1,145 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
+@custom-variant dark (&:is(.dark *));
+
+/* ── V11 "Radial Pro" — always-dark theme ──────────────────────────
+   shadcn's semantic tokens are mapped onto the V11 palette so every
+   shadcn (Base UI) component matches the design automatically.
+   Minimal: dark neutrals + a single vermilion brand. Sharp corners. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* shadcn semantic tokens (themed dark) */
+  --background: #101218;
+  --foreground: #eceef2;
+  --card: #1a1d24;
+  --card-foreground: #eceef2;
+  --popover: #1a1d24;
+  --popover-foreground: #eceef2;
+  --primary: #ff5a3c;
+  --primary-foreground: #ffffff;
+  --secondary: #20242d;
+  --secondary-foreground: #eceef2;
+  --muted: #20242d;
+  --muted-foreground: #9097a3;
+  --accent: #20242d;
+  --accent-foreground: #eceef2;
+  --destructive: #ff5a3c;
+  --border: #2e343f;
+  --input: #2e343f;
+  --ring: #ff5a3c;
+  --radius: 0.25rem; /* 4px — sharp */
+  --chart-1: #ff5a3c;
+  --chart-2: #9097a3;
+  --chart-3: #5e6470;
+  --chart-4: #2a2e37;
+  --chart-5: #20242d;
+  --sidebar: #1a1d24;
+  --sidebar-foreground: #eceef2;
+  --sidebar-primary: #ff5a3c;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #20242d;
+  --sidebar-accent-foreground: #eceef2;
+  --sidebar-border: #2e343f;
+  --sidebar-ring: #ff5a3c;
+
+  /* ── custom V11 tokens (app screens) ── */
+  --bg: #101218;
+  --surface: #1a1d24;
+  --surface-2: #20242d;
+  --track: #2a2e37;
+  --tx: #eceef2;
+  --dim: #9097a3;
+  --faint: #5e6470;
+  --brand: #ff5a3c;
+  --brand-deep: #c9341a;
+  --brand-bg: #2a1812;
+  /* radial dome gradient (the 3D press button) */
+  --dome: radial-gradient(circle at 50% 34%, #ff8f73 0%, #ff5a3c 62%, #e8431f 100%);
 }
 
 @theme inline {
+  /* custom V11 utilities */
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-track: var(--track);
+  --color-tx: var(--tx);
+  --color-dim: var(--dim);
+  --color-faint: var(--faint);
+  --color-brand: var(--brand);
+  --color-brand-deep: var(--brand-deep);
+  --color-brand-bg: var(--brand-bg);
+  --radius-sharp: 4px;
+
+  /* shadcn semantic utilities */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+
+  --font-sans: var(--font-sans);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  height: 100%;
 }
 
 body {
-  background: var(--background);
+  background: #07080b; /* darker page behind the centered phone frame */
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* hide scrollbars inside the app shell for a native feel */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply text-foreground;
+  }
 }
