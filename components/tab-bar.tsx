@@ -13,7 +13,7 @@ type Tab = {
 };
 
 const tabs: Tab[] = [
-  { href: "/", label: "Boshqaruv", icon: Siren, match: ["/", "/jonli"] },
+  { href: "/", label: "Boshqaruv", icon: Siren, match: ["/", "/buttons", "/jonli"] },
   { href: "/aholi", label: "Aholi", icon: Users, match: ["/aholi"] },
   { href: "/tarix", label: "Tarix", icon: History, match: ["/tarix"] },
   { href: "/sozlama", label: "Sozlama", icon: Settings, match: ["/sozlama"] },

@@ -115,6 +115,7 @@
   --radius-xl: calc(var(--radius) * 1.4);
 
   --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 }
 
 html,
