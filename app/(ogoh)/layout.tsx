@@ -22,10 +22,16 @@ const TITLE = "OGOH — Suv toʻsiq ogohlantirish tizimi";
 const DESCRIPTION =
   "Operator uchun favqulodda ogohlantirish tizimi — aholini SMS orqali xabardor qilish.";
 
+// og:image / twitter:image must resolve to absolute URLs on the real domain:
+// NEXT_PUBLIC_SITE_URL if set, else the Vercel production domain, else localhost.
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : "http://localhost:3000");
+
 export const metadata: Metadata = {
-  // Set NEXT_PUBLIC_SITE_URL in production so og:image / twitter:image
-  // resolve to absolute URLs on the real domain.
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  metadataBase: new URL(SITE_URL),
   applicationName: SITE_NAME,
   title: {
     default: TITLE,
