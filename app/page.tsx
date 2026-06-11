@@ -41,7 +41,32 @@ export default function Page() {
   const startRef = useRef(0);
   const holdingRef = useRef(false);
   const doneTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const clickRef = useRef<HTMLAudioElement | null>(null);
+  const clickRef = useRef<{ ctx: AudioContext; buf: AudioBuffer } | null>(null);
+
+  // Preload + decode the click via Web Audio. An HTMLAudioElement created on
+  // first press fetches the mp3 right then (late first click) and .play() has
+  // high latency on mobile; a pre-decoded buffer fires instantly.
+  useEffect(() => {
+    const Ctx =
+      window.AudioContext ??
+      (window as unknown as { webkitAudioContext?: typeof AudioContext })
+        .webkitAudioContext;
+    if (!Ctx) return;
+    const ctx = new Ctx(); // allowed pre-gesture; starts suspended
+    let cancelled = false;
+    fetch("/click.mp3")
+      .then((r) => r.arrayBuffer())
+      .then((b) => ctx.decodeAudioData(b))
+      .then((buf) => {
+        if (!cancelled) clickRef.current = { ctx, buf };
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+      clickRef.current = null;
+      ctx.close().catch(() => {});
+    };
+  }, []);
 
   // paint dial ring + % readout directly (no React render per frame)
   function paint(p: number) {
@@ -55,15 +80,14 @@ export default function Page() {
   }
 
   function playClick() {
-    if (typeof Audio === "undefined") return;
-    let a = clickRef.current;
-    if (!a) {
-      a = new Audio("/click.mp3");
-      a.preload = "auto";
-      clickRef.current = a;
-    }
-    a.currentTime = 0;
-    a.play().catch(() => {});
+    const a = clickRef.current;
+    if (!a) return; // still loading — skip rather than delay the press
+    // the context unlocks on this user gesture
+    if (a.ctx.state === "suspended") a.ctx.resume().catch(() => {});
+    const src = a.ctx.createBufferSource();
+    src.buffer = a.buf;
+    src.connect(a.ctx.destination);
+    src.start();
   }
 
   function tick(now: number) {
