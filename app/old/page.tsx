@@ -130,7 +130,7 @@ export default function Page() {
     setTransitions(false);
     paint(1);
     // let the full ring + "sent" state register before navigating
-    doneTimerRef.current = setTimeout(() => router.push("/jonli"), 300);
+    doneTimerRef.current = setTimeout(() => router.push("/old/jonli"), 300);
   }
 
   useEffect(() => {

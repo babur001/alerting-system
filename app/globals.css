@@ -60,7 +60,51 @@
   --dome: radial-gradient(circle at 50% 34%, #ff8f73 0%, #ff5a3c 62%, #e8431f 100%);
 }
 
+/* ── OGOH — "dark tactical control room" (Claude Design rebuild) ──
+   Applied via the `ogoh` class on the new app's root <html>. Remaps the
+   shadcn semantic tokens so Base UI components pick up the palette. */
+.ogoh {
+  --background: #0c0d10;
+  --foreground: #e7e9ec;
+  --card: #15171c;
+  --card-foreground: #e7e9ec;
+  --popover: #15171c;
+  --popover-foreground: #e7e9ec;
+  --primary: #ff4632;
+  --primary-foreground: #ffffff;
+  --secondary: #1b1e25;
+  --secondary-foreground: #e7e9ec;
+  --muted: #1b1e25;
+  --muted-foreground: #9aa1ab;
+  --accent: #1b1e25;
+  --accent-foreground: #e7e9ec;
+  --destructive: #ff4632;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.1);
+  --ring: #ff4632;
+  --radius: 0.875rem; /* 14px — soft panels */
+}
+
 @theme inline {
+  /* OGOH palette utilities (og-*) */
+  --color-og-bg: #0c0d10;
+  --color-og-bg2: #08090c;
+  --color-og-panel: #15171c;
+  --color-og-panel2: #1b1e25;
+  --color-og-raise: #22262e;
+  --color-og-line: rgba(255, 255, 255, 0.1);
+  --color-og-line2: rgba(255, 255, 255, 0.055);
+  --color-og-ink: #e7e9ec;
+  --color-og-dim: #9aa1ab;
+  --color-og-dim2: #6e7580;
+  --color-og-red: #ff4632;
+  --color-og-red-deep: #c41d10;
+  --color-og-red-soft: rgba(255, 70, 50, 0.14);
+  --color-og-green: #1fcb84;
+  --color-og-green-soft: rgba(31, 203, 132, 0.14);
+  --color-og-amber: #f4a724;
+  --color-og-amber-soft: rgba(244, 167, 36, 0.14);
+
   /* custom V11 utilities */
   --color-bg: var(--bg);
   --color-surface: var(--surface);
@@ -121,6 +165,8 @@
 html,
 body {
   height: 100%;
+  /* dark UA chrome: native scrollbars, form controls, etc. */
+  color-scheme: dark;
 }
 
 body {
@@ -131,11 +177,11 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* hide scrollbars inside the app shell for a native feel */
-.no-scrollbar::-webkit-scrollbar {
+/* hide scrollbars everywhere for a native feel (scrolling still works) */
+*::-webkit-scrollbar {
   display: none;
 }
-.no-scrollbar {
+* {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
@@ -147,4 +193,41 @@ body {
   body {
     @apply text-foreground;
   }
+}
+
+/* ── OGOH helpers ── */
+.og-hatch {
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.016) 0 2px,
+    transparent 2px 9px
+  );
+}
+
+/* idle pulse ring around the siren trigger */
+@keyframes og-ring {
+  0% {
+    transform: scale(0.78);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(1.22);
+    opacity: 0;
+  }
+}
+.animate-og-ring {
+  animation: og-ring 2.2s ease-out infinite;
+}
+
+@keyframes og-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.12);
+  }
+}
+.animate-og-pulse {
+  animation: og-pulse 1s ease-in-out infinite;
 }

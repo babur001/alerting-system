@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>OGOH — Visual Directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin: 0; padding: 0; background: #e9e7e1; }
+  * { box-sizing: border-box; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="../design-canvas.jsx"></script>
+<script type="text/babel" src="../ios-frame.jsx"></script>
+
+<script type="text/babel">
+const { useState } = React;
+
+// ── Siren beacon glyph (simple UI icon) ───────────────────────
+function Siren({ size = 64, color = '#fff', stroke = 6 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
+      <path d="M16 44 V40 a16 16 0 0 1 32 0 V44" stroke={color} strokeWidth={stroke} strokeLinecap="round" strokeLinejoin="round"/>
+      <rect x="11" y="44" width="42" height="8" rx="4" stroke={color} strokeWidth={stroke}/>
+      <line x1="32" y1="16" x2="32" y2="8" stroke={color} strokeWidth={stroke} strokeLinecap="round"/>
+      <line x1="50" y1="24" x2="56" y2="19" stroke={color} strokeWidth={stroke} strokeLinecap="round"/>
+      <line x1="14" y1="24" x2="8" y2="19" stroke={color} strokeWidth={stroke} strokeLinecap="round"/>
+    </svg>
+  );
+}
+
+// Tick ring (like the reference button)
+function TickRing({ size = 300, count = 64, color, active = 0 }) {
+  const ticks = [];
+  const cx = size / 2, cy = size / 2;
+  const rOuter = size / 2 - 4;
+  const rInner = size / 2 - 20;
+  for (let i = 0; i < count; i++) {
+    const a = (i / count) * Math.PI * 2 - Math.PI / 2;
+    const on = i / count < active;
+    ticks.push(
+      <line key={i}
+        x1={cx + Math.cos(a) * rInner} y1={cy + Math.sin(a) * rInner}
+        x2={cx + Math.cos(a) * rOuter} y2={cy + Math.sin(a) * rOuter}
+        stroke={on ? color : 'currentColor'} strokeWidth="2" strokeLinecap="round"/>
+    );
+  }
+  return <svg width={size} height={size} style={{ position: 'absolute', inset: 0 }}>{ticks}</svg>;
+}
+
+function TabBar({ items, active, bg, fg, dim, accent }) {
+  return (
+    <div style={{
+      display: 'flex', justifyContent: 'space-around', alignItems: 'center',
+      padding: '10px 8px 26px', background: bg, borderTop: `1px solid ${dim}33`,
+    }}>
+      {items.map((it, i) => (
+        <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+          <div style={{
+            width: 22, height: 22, borderRadius: i === active ? 6 : 11,
+            background: i === active ? accent : 'transparent',
+            border: i === active ? 'none' : `2px solid ${dim}`,
+          }} />
+          <span style={{ fontSize: 9.5, letterSpacing: 0.4, color: i === active ? fg : dim, fontWeight: 600 }}>{it}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+const TABS = ['Trevoga', 'Aholi', 'Tarix', 'Xarita', 'Sozlama'];
+
+/* ═══════════════════════════════════════════════════════════
+   DIRECTION A — "FUQARO MUHOFAZASI" (Civil Defense / official)
+   Light concrete, institutional, Archivo, safety-red + amber
+   ═══════════════════════════════════════════════════════════ */
+function DirectionA() {
+  const ink = '#16130F', concrete = '#EDEAE3', red = '#D5342A', amber = '#E6A700';
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: concrete, fontFamily: 'Archivo, system-ui', color: ink }}>
+      <div style={{ height: 54 }} />
+      {/* official header */}
+      <div style={{ padding: '6px 20px 14px', display: 'flex', alignItems: 'center', gap: 11 }}>
+        <div style={{ width: 38, height: 38, borderRadius: 8, background: ink, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Siren size={24} color={amber} stroke={5} />
+        </div>
+        <div style={{ lineHeight: 1.05 }}>
+          <div style={{ fontSize: 19, fontWeight: 800, letterSpacing: 1.5 }}>OGOH</div>
+          <div style={{ fontSize: 9, fontWeight: 600, letterSpacing: 1, color: '#6b6357' }}>SUV TOʻSIQ OGOHLANTIRISH TIZIMI</div>
+        </div>
+      </div>
+      {/* hazard rule */}
+      <div style={{ height: 8, background: `repeating-linear-gradient(135deg, ${ink} 0 12px, ${amber} 12px 24px)`, opacity: 0.9 }} />
+
+      {/* reservoir selector */}
+      <div style={{ padding: '16px 20px 4px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div>
+          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1, color: '#6b6357' }}>FAOL OBYEKT</div>
+          <div style={{ fontSize: 22, fontWeight: 800, marginTop: 2 }}>Chorvoq suv ombori</div>
+        </div>
+        <div style={{ padding: '5px 9px', borderRadius: 6, background: '#19a06122', border: '1.5px solid #19a061', fontSize: 10, fontWeight: 700, letterSpacing: 0.5, color: '#127a49', whiteSpace: 'nowrap' }}>● NORMAL</div>
+      </div>
+
+      {/* siren button */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 20px' }}>
+        <div style={{ position: 'relative', width: 244, height: 244, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#c9c4ba' }}>
+          <TickRing size={244} count={60} color={red} active={0} />
+          <div style={{
+            width: 188, height: 188, borderRadius: '50%',
+            background: `radial-gradient(circle at 38% 30%, #f0685b, ${red} 62%, #b3251c)`,
+            boxShadow: `0 0 0 8px #fff, 0 0 0 10px ${red}44, 0 22px 50px ${red}66, inset 0 4px 18px rgba(255,255,255,0.45), inset 0 -10px 26px rgba(120,10,0,0.5)`,
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6,
+          }}>
+            <Siren size={58} color="#fff" stroke={5} />
+            <div style={{ fontSize: 13, fontWeight: 800, letterSpacing: 2, color: '#fff' }}>BOSIB TURING</div>
+          </div>
+        </div>
+        <div style={{ marginTop: 18, textAlign: 'center' }}>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, color: '#6b6357' }}>1,5 SONIYA USHLAB TURING · DARAJA: QIZIL</div>
+        </div>
+      </div>
+
+      {/* stat strip */}
+      <div style={{ display: 'flex', borderTop: `1.5px solid ${ink}22`, background: '#e4e0d8' }}>
+        {[['142', 'FAOL ABONENT'], ['3', 'HUDUD'], ['12 soat', 'OXIRGI TEKSHIRUV']].map(([n, l], i) => (
+          <div key={i} style={{ flex: 1, padding: '12px 8px', textAlign: 'center', borderRight: i < 2 ? `1.5px solid ${ink}18` : 'none' }}>
+            <div style={{ fontSize: 18, fontWeight: 800 }}>{n}</div>
+            <div style={{ fontSize: 8.5, fontWeight: 700, letterSpacing: 0.6, color: '#6b6357', marginTop: 2 }}>{l}</div>
+          </div>
+        ))}
+      </div>
+      <TabBar items={TABS} active={0} bg="#fff" fg={ink} dim="#9a9389" accent={red} />
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DIRECTION B — "BOSHQARUV PUNKTI" (Control Room / tactical)
+   Near-black, IBM Plex Mono, glowing siren, terminal chrome
+   ═══════════════════════════════════════════════════════════ */
+function DirectionB() {
+  const bg = '#0C0D10', panel = '#15171C', red = '#FF4632', mono = "'IBM Plex Mono', monospace";
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', color: '#E7E9EC',
+      background: `${bg} repeating-linear-gradient(135deg, rgba(255,255,255,0.018) 0 2px, transparent 2px 9px)`,
+      fontFamily: "'IBM Plex Sans', system-ui" }}>
+      <div style={{ height: 54 }} />
+      {/* header */}
+      <div style={{ padding: '8px 18px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #ffffff12' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+          <Siren size={20} color={red} stroke={5} />
+          <span style={{ fontFamily: mono, fontSize: 15, fontWeight: 700, letterSpacing: 3 }}>OGOH</span>
+        </div>
+        <span style={{ fontFamily: mono, fontSize: 10, color: '#19C37D', letterSpacing: 1 }}>● TIZIM ONLAYN</span>
+      </div>
+
+      {/* reservoir readout */}
+      <div style={{ padding: '14px 18px 0' }}>
+        <div style={{ fontFamily: mono, fontSize: 10, color: '#6f7680', letterSpacing: 1 }}>OBYEKT // 02</div>
+        <div style={{ fontSize: 19, fontWeight: 700, marginTop: 2 }}>Chorvoq suv ombori</div>
+        <div style={{ display: 'flex', gap: 14, marginTop: 8, fontFamily: mono, fontSize: 11, color: '#9aa1ab' }}>
+          <span>SATH <b style={{ color: '#E7E9EC' }}>61%</b></span>
+          <span>BOSIM <b style={{ color: '#E7E9EC' }}>OK</b></span>
+          <span style={{ color: '#19C37D' }}>● BARQAROR</span>
+        </div>
+      </div>
+
+      {/* glowing siren */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ position: 'relative', width: 252, height: 252, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2b2f37' }}>
+          <TickRing size={252} count={72} color={red} active={0} />
+          <div style={{
+            width: 176, height: 176, borderRadius: '50%',
+            background: `radial-gradient(circle at 40% 32%, #ff7a68, ${red} 60%, #c41d10)`,
+            boxShadow: `0 0 60px ${red}99, 0 0 0 1px #ff8a7a, inset 0 6px 22px rgba(255,255,255,0.4), inset 0 -12px 30px rgba(120,8,0,0.6)`,
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 5,
+          }}>
+            <Siren size={52} color="#fff" stroke={5} />
+            <div style={{ fontFamily: mono, fontSize: 22, fontWeight: 700, color: '#fff' }}>0%</div>
+            <div style={{ fontFamily: mono, fontSize: 10, fontWeight: 500, letterSpacing: 2, color: '#ffffffcc' }}>BOSIB TURING</div>
+          </div>
+        </div>
+        <div style={{ marginTop: 14, fontFamily: mono, fontSize: 10, letterSpacing: 1.5, color: '#6f7680' }}>USHLAB TURISH: 1,5 SONIYA · DARAJA: QIZIL</div>
+      </div>
+
+      {/* recipients readout */}
+      <div style={{ margin: '0 14px 10px', padding: 13, background: panel, borderRadius: 12, border: '1px solid #ffffff10', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <div style={{ fontFamily: mono, fontSize: 26, fontWeight: 700, lineHeight: 1 }}>142</div>
+          <div style={{ fontSize: 11, color: '#9aa1ab', marginTop: 3 }}>faol abonent ogohlantiriladi</div>
+        </div>
+        <div style={{ display: 'flex', gap: 4 }}>
+          {[1,1,1,0,1].map((d,i) => <div key={i} style={{ width: 7, height: 22, borderRadius: 2, background: d ? '#19C37D' : '#3a3f48' }} />)}
+        </div>
+      </div>
+      <TabBar items={TABS} active={0} bg="#0A0B0E" fg="#E7E9EC" dim="#5a606b" accent={red} />
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DIRECTION C — "MAYDON" (High-Vis Field / sunlight-readable)
+   Safety yellow + black + red, Hanken Grotesk, chunky targets
+   ═══════════════════════════════════════════════════════════ */
+function DirectionC() {
+  const ink = '#171205', yellow = '#FFD400', red = '#E2231A';
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: '#F7F4EC', fontFamily: "'Hanken Grotesk', system-ui", color: ink }}>
+      {/* hazard tape top */}
+      <div style={{ height: 54, background: yellow }} />
+      <div style={{ height: 10, background: `repeating-linear-gradient(135deg, ${ink} 0 14px, ${yellow} 14px 28px)` }} />
+      <div style={{ background: yellow, padding: '12px 20px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <Siren size={26} color={ink} stroke={5} />
+          <div style={{ lineHeight: 1 }}>
+            <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: 0.5 }}>OGOH</div>
+            <div style={{ fontSize: 9.5, fontWeight: 700, color: '#5c4d00' }}>Maydon rejimi</div>
+          </div>
+        </div>
+        <div style={{ background: ink, color: yellow, padding: '5px 10px', borderRadius: 20, fontSize: 11, fontWeight: 800 }}>NORMAL</div>
+      </div>
+
+      <div style={{ padding: '16px 20px 0' }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: '#8a8270', letterSpacing: 0.5 }}>OBYEKT</div>
+        <div style={{ fontSize: 24, fontWeight: 900, marginTop: 1 }}>Chorvoq suv ombori</div>
+      </div>
+
+      {/* siren */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 20px' }}>
+        <div style={{
+          width: 230, height: 230, borderRadius: '50%',
+          background: `radial-gradient(circle at 38% 30%, #f56a60, ${red} 60%, #b01209)`,
+          border: `7px solid ${ink}`,
+          boxShadow: `0 18px 0 ${ink}, 0 18px 44px ${red}55, inset 0 5px 18px rgba(255,255,255,0.4)`,
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8,
+        }}>
+          <Siren size={64} color="#fff" stroke={6} />
+          <div style={{ fontSize: 17, fontWeight: 900, letterSpacing: 1, color: '#fff' }}>BOSIB TURING</div>
+        </div>
+        <div style={{ marginTop: 26, background: ink, color: yellow, padding: '7px 16px', borderRadius: 22, fontSize: 12, fontWeight: 800, letterSpacing: 0.5 }}>
+          1,5 SONIYA USHLANG · QIZIL DARAJA
+        </div>
+      </div>
+
+      {/* big recipient bar */}
+      <div style={{ margin: '0 16px 12px', padding: '16px 18px', background: ink, borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+          <span style={{ fontSize: 34, fontWeight: 900, color: yellow, lineHeight: 1 }}>142</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: '#d8d2c2' }}>abonent</span>
+        </div>
+        <div style={{ fontSize: 12, fontWeight: 700, color: '#9a937f', textAlign: 'right' }}>3 hudud<br/>faol</div>
+      </div>
+      <TabBar items={TABS} active={0} bg="#fff" fg={ink} dim="#a59c84" accent={red} />
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <DesignCanvas>
+      <DCSection id="home" title="OGOH · Bosh ekran" subtitle="3 ta yoʻnalish — bittasini tanlang, toʻliq ilovani shu uslubda quraman">
+        <DCArtboard id="a" label="A · Fuqaro muhofazasi (rasmiy / yengil)" width={402} height={874}>
+          <IOSDevice dark={false}><DirectionA /></IOSDevice>
+        </DCArtboard>
+        <DCArtboard id="b" label="B · Boshqaruv punkti (qorongʻi / taktik)" width={402} height={874}>
+          <IOSDevice dark={true}><DirectionB /></IOSDevice>
+        </DCArtboard>
+        <DCArtboard id="c" label="C · Maydon (xavfsizlik sarigʻi / yorqin)" width={402} height={874}>
+          <IOSDevice dark={false}><DirectionC /></IOSDevice>
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

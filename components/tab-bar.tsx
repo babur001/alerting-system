@@ -13,10 +13,10 @@ type Tab = {
 };
 
 const tabs: Tab[] = [
-  { href: "/", label: "Boshqaruv", icon: Siren, match: ["/", "/buttons", "/jonli"] },
-  { href: "/aholi", label: "Aholi", icon: Users, match: ["/aholi"] },
-  { href: "/tarix", label: "Tarix", icon: History, match: ["/tarix"] },
-  { href: "/sozlama", label: "Sozlama", icon: Settings, match: ["/sozlama"] },
+  { href: "/old", label: "Boshqaruv", icon: Siren, match: ["/old", "/old/buttons", "/old/jonli"] },
+  { href: "/old/aholi", label: "Aholi", icon: Users, match: ["/old/aholi"] },
+  { href: "/old/tarix", label: "Tarix", icon: History, match: ["/old/tarix"] },
+  { href: "/old/sozlama", label: "Sozlama", icon: Settings, match: ["/old/sozlama"] },
 ];
 
 export default function TabBar() {
