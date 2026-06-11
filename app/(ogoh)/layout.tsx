@@ -20,7 +20,7 @@ const plexMono = IBM_Plex_Mono({
 const SITE_NAME = "OGOH";
 const TITLE = "OGOH — Suv toʻsiq ogohlantirish tizimi";
 const DESCRIPTION =
-  "Operator uchun favqulodda ogohlantirish tizimi — aholini SMS va ovozli qoʻngʻiroq orqali xabardor qilish.";
+  "Operator uchun favqulodda ogohlantirish tizimi — aholini SMS orqali xabardor qilish.";
 
 export const metadata: Metadata = {
   // Set NEXT_PUBLIC_SITE_URL in production so og:image / twitter:image
@@ -38,7 +38,6 @@ export const metadata: Metadata = {
     "suv toshqini",
     "suv toʻsiq",
     "SMS xabar",
-    "ovozli qoʻngʻiroq",
     "early warning system",
   ],
   category: "public safety",
@@ -49,11 +48,17 @@ export const metadata: Metadata = {
     locale: "uz_UZ",
     title: TITLE,
     description: DESCRIPTION,
+    // Static assets pre-rendered by scripts/generate-share-images.mjs
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: TITLE }],
   },
   twitter: {
     card: "summary_large_image",
     title: TITLE,
     description: DESCRIPTION,
+    images: [{ url: "/og.png", alt: TITLE }],
+  },
+  icons: {
+    apple: "/apple-icon.png",
   },
   robots: {
     index: true,

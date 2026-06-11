@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "OGOH — Suv toʻsiq ogohlantirish tizimi",
     short_name: "OGOH",
     description:
-      "Operator uchun favqulodda ogohlantirish tizimi — aholini SMS va ovozli qoʻngʻiroq orqali xabardor qilish.",
+      "Operator uchun favqulodda ogohlantirish tizimi — aholini SMS orqali xabardor qilish.",
     start_url: "/",
     display: "standalone",
     orientation: "portrait",
